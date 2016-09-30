@@ -1,5 +1,7 @@
 FROM mndrix/swipl:latest
 
+RUN apt-get update
+RUN apt-get dist-upgrade -y
 RUN apt-get install -y git curl unzip
 
 RUN git clone https://github.com/SWI-Prolog/swish.git
