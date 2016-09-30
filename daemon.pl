@@ -13,13 +13,8 @@ user:file_search_path(swish, '.').
 
 swish_config:config(show_beware,        false).
 
-memlimit :-
-   catch(rlimit(as, _, 8 000 000 000), E,
-	 print_message(warning, E)).
-
-%:- initialization memlimit.
 :- initialization http_daemon.
 
 :- [swish(swish)].
-% :- use_module(swish(lib/authenticate)).
+:- use_module(swish(lib/authenticate)).
 :- use_module(swish:swish(lib/swish_debug)).
