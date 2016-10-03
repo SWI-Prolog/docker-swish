@@ -10,5 +10,15 @@ image:
 run:
 	docker run --detach ${DOPTS} swish
 
+authenticated:
+	docker run --detach ${DOPTS} swish --authenticated
+
 interactive:
 	docker run -it ${DOPTS} swish --interactive
+
+add-user:
+	docker run -it ${DOPTS} swish --add-user
+
+help:
+	docker run -it ${DOPTS} swish --help
+
