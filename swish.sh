@@ -26,14 +26,6 @@ while [ ! -z "$1" ]; do
   esac
 done
 
-if [ ! -f daemon.pl ]; then
-
-fi
-
-if [ ! -f settings.db ]; then
-  cp /settings.db .
-fi
-
 for dir in storage; do
   mkdir -p $dir
   chown daemon $dir
@@ -46,4 +38,4 @@ for file in ; do
   chown daemon $file
 done
 
-./daemon.pl --port=3050 --user=daemon $start
+${SWISH_HOME}/daemon.pl --port=3050 --user=daemon $start
