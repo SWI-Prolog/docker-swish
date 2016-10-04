@@ -1,15 +1,8 @@
-FROM mndrix/swipl:latest
-
-RUN apt-get update
-RUN apt-get dist-upgrade -y
-RUN apt-get install -y git curl unzip
-
-RUN git clone https://github.com/SWI-Prolog/swish.git #4
-RUN curl http://www.swi-prolog.org/download/swish/swish-bower-components.zip > swish/swish-bower-components.zip; \
-    (cd swish && unzip swish-bower-components.zip && rm swish-bower-components.zip)
+FROM swipl-xl
 
 VOLUME /data
 
+COPY swish swish
 COPY swish.sh swish.sh
 EXPOSE 3050
 
