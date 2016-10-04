@@ -53,7 +53,7 @@ while [ ! -z "$1" ]; do
 			shift
 			;;
     --authenticated)	setup_initial_user
-			add_module authenticate
+			add_module lib/authenticate
 			shift
 			;;
     --add-user)		add_user
@@ -88,6 +88,10 @@ for file in ; do
   fi
   chown daemon $file
 done
+
+if [ -S /home/rserve/socket ]; then
+  add_module lib/r_swish@swish
+fi
 
 export SWISH_MODULES
 ${SWISH_HOME}/daemon.pl --${scheme}=3050 --user=daemon $start
