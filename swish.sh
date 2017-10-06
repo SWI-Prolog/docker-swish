@@ -4,17 +4,15 @@
 #
 # This script is started in /data.  SWISH is in /swish
 
-reconf=no
-config=
+configdir=config-enabled
+configavail=/swish/config-available
 start=--no-fork
 ssl=
 scheme=http
-SWISH_MODULES=
 
 usage()
 { echo "Usage: docker run [docker options] swish [swish options]"
   echo "swish options:"
-  echo "  --interactive          Run Prolog toplevel (requires -it)"
   echo "  --authenticated        Force login to SWISH"
   echo "  --add_user		 Add a new user"
   echo "  --https		 Create an HTTPS server"
@@ -39,21 +37,19 @@ setup_initial_user()
   fi
 }
 
-add_module()
-{ if [ -z "$SWISH_MODULES" ]; then
-    SWISH_MODULES=$1
-  else
-    SWISH_MODULES="$SWISH_MODULES:$1"
-  fi
+if [ -t 0 ] ; then
+  start=--interactive
+fi
+
+add_config()
+{ mkdir -p $configdir
+  cp $configavail/$1 $configdir
 }
 
 while [ ! -z "$1" ]; do
   case "$1" in
-    --interactive)	start=--interactive
-			shift
-			;;
     --authenticated)	setup_initial_user
-			add_module swish/lib/authenticate
+			add_config auth_http_always.pl
 			shift
 			;;
     --add-user)		add_user
@@ -65,9 +61,6 @@ while [ ! -z "$1" ]; do
     --CN=*|--O=*|--C=*)	ssl="$ssl $1"
 			shift
 			;;
-    --modules=*)	modules=$(echo "$1" | sed 's/^--modules=//')
-			shift;
-			;;
     --help)		usage
 			exit 0
 			;;
@@ -77,9 +70,9 @@ while [ ! -z "$1" ]; do
   esac
 done
 
-for dir in storage; do
+for dir in data; do
   mkdir -p $dir
-  chown daemon $dir
+  chown -R daemon $dir
 done
 
 for file in ; do
@@ -89,10 +82,9 @@ for file in ; do
   chown daemon $file
 done
 
-if [ -S /home/rserve/socket ]; then
-  add_module swish/lib/r_swish@swish
-  add_module library/r/r_sandbox
+if [ -S /rserve/socket ]; then
+  add_config r_serve.pl
+  echo ":- set_setting_default(rserve:socket, '/rserve/socket')." >> $configdir/r_serve.pl
 fi
 
-export SWISH_MODULES
 ${SWISH_HOME}/daemon.pl --${scheme}=3050 ${ssl} --user=daemon $start

@@ -1,12 +1,9 @@
-VOLUME=swish-test
+VOLUME=$(shell pwd)
 PORT=3050
 WITH_R=--volumes-from=rserve
 
 PUBLISH=--publish=${PORT}:3050
 DOPTS=${PUBLISH} -v ${VOLUME}:/data ${WITH_R}
-
-BOWER=swish-bower-components.zip
-BOWER_URL=http://www.swi-prolog.org/download/swish/${BOWER}
 
 all:
 	@echo "Targets"
@@ -17,7 +14,7 @@ all:
 	@echo "add-user         Add a user for authenticated mode"
 	@echo "interactive      Run the image interactively"
 
-image:
+image:	swish
 	docker build -t swish .
 
 swish::
@@ -26,8 +23,8 @@ swish::
 	else \
 	   git clone https://github.com/SWI-Prolog/swish.git; \
 	fi
-	make -C swish clean
-	make -C swish bower-components src js css
+	(cd swish && git submodule update --init)
+	make -C swish bower-zip min packs
 
 run:
 	docker run --detach ${DOPTS} swish
@@ -36,7 +33,7 @@ authenticated:
 	docker run --detach ${DOPTS} swish --authenticated
 
 interactive:
-	docker run -it ${DOPTS} swish --interactive
+	docker run -it ${DOPTS} swish
 
 add-user:
 	docker run -it ${DOPTS} swish --add-user

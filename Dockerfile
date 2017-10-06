@@ -1,4 +1,4 @@
-FROM swipl-xl
+FROM swipl
 
 VOLUME /data
 
@@ -10,4 +10,4 @@ ENV SWISH_HOME /swish
 ENV SWISH_DATA /data
 WORKDIR ${SWISH_DATA}
 
-ENTRYPOINT ["bash", "/swish.sh"]
+ENTRYPOINT ["/swish.sh"]
