@@ -14,17 +14,8 @@ all:
 	@echo "add-user         Add a user for authenticated mode"
 	@echo "interactive      Run the image interactively"
 
-image:	swish
+image::
 	docker build -t swish .
-
-swish::
-	if [ -d swish ]; then \
-	   (cd swish && git pull) ; \
-	else \
-	   git clone https://github.com/SWI-Prolog/swish.git; \
-	fi
-	(cd swish && git submodule update --init)
-	make -C swish bower-zip min packs
 
 run:
 	docker run --detach ${DOPTS} swish
