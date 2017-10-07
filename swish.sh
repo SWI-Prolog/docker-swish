@@ -17,6 +17,7 @@ usage()
   echo "swish options:"
   echo "  --bash		 Just jun bash in the container"
   echo "  --authenticated        Force login to SWISH"
+  echo "  --social		 Allow optional login"
   echo "  --add_user		 Add a new user"
   echo "  --https		 Create an HTTPS server"
   echo "  --CN=host		 Hostname for certificate"
@@ -27,7 +28,7 @@ usage()
 
 add_user()
 { if [ -t 0 ]; then
-    swipl -g swish_add_user,halt -t 'halt(1)' ${SWISH_HOME}/lib/authenticate.pl
+    swipl -g swish_add_user -t halt ${SWISH_HOME}/lib/plugin/http_authenticate.pl
   else
     echo "ERROR: SWISH: must run in interactive mode to setup initial user"
     exit 1
@@ -50,6 +51,11 @@ setup_initial_user()
   fi
 }
 
+add_config()
+{ cp "$configavail/$1" "$configdir/$1"
+  chown $uconfig.$uconfig "$configdir/$1"
+}
+
 # If there is a data directory, reuse it and set our user to be the
 # native user of this directory.
 
@@ -69,12 +75,12 @@ else
   uconfig=config
   mkdir $configdir
   chown $uconfig.$uconfig "$configdir"
+	# Add default configuration
+  add_config user_profile.pl
+  add_config notifications.pl
+  add_config email.pl
+  add_config clpqr.pl
 fi
-
-add_config()
-{ cp "$configavail/$1" "$configdir/$1"
-  chown $uconfig.$uconfig "$configdir/$1"
-}
 
 if [ -t 0 ] ; then
   start=--interactive
@@ -87,6 +93,12 @@ while [ ! -z "$1" ]; do
 			;;
     --authenticated)	setup_initial_user
 			add_config auth_http_always.pl
+			shift
+			;;
+    --social)		setup_initial_user
+			add_config auth_http.pl
+			add_config auth_google.pl
+			add_config auth_stackoverflow.pl
 			shift
 			;;
     --add-user)		add_user

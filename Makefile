@@ -11,6 +11,7 @@ all:
 	@echo "image            Build the swish image"
 	@echo "run              Run the image (detached)"
 	@echo "authenticated    Run the image in authenticated mode"
+	@echo "social           Run the image with social login"
 	@echo "add-user         Add a user for authenticated mode"
 	@echo "interactive      Run the image interactively"
 
@@ -22,6 +23,9 @@ run:
 
 authenticated:
 	docker run --detach ${DOPTS} swish --authenticated
+
+social:
+	docker run --detach ${DOPTS} swish --social
 
 interactive:
 	docker run -it ${DOPTS} swish
