@@ -13,6 +13,7 @@ scheme=http
 usage()
 { echo "Usage: docker run [docker options] swish [swish options]"
   echo "swish options:"
+  echo "  --bash		 Just jun bash in the container"
   echo "  --authenticated        Force login to SWISH"
   echo "  --add_user		 Add a new user"
   echo "  --https		 Create an HTTPS server"
@@ -48,6 +49,9 @@ add_config()
 
 while [ ! -z "$1" ]; do
   case "$1" in
+    --bash)		/bin/bash
+			exit 0
+			;;
     --authenticated)	setup_initial_user
 			add_config auth_http_always.pl
 			shift
