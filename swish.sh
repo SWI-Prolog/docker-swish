@@ -9,6 +9,8 @@ configavail=/swish/config-available
 start=--no-fork
 ssl=
 scheme=http
+udaemon=daemon
+uconfig=root
 
 usage()
 { echo "Usage: docker run [docker options] swish [swish options]"
@@ -32,20 +34,51 @@ add_user()
   fi
 }
 
+# `mkdir file user` creates user with the uid and gid of file.
+
+mkuser()
+{ f="$1"
+  u="$2"
+
+  groupadd "$(ls -nd "$f" | awk '{printf "-g %s\n",$4 }')" -o $u
+  useradd  "$(ls -nd "$f" | awk '{printf "-u %s\n",$3 }')" -g $u -o $u
+}
+
 setup_initial_user()
 { if [ ! -f passwd ]; then
     add_user
   fi
 }
 
-if [ -t 0 ] ; then
-  start=--interactive
+# If there is a data directory, reuse it and set our user to be the
+# native user of this directory.
+
+if [ -d data ]; then
+  mkuser data swish
+  udaemon=swish
+else
+  mkdir data
+  chown $udaemon.$udaemon data
+fi
+
+if [ -d $configdir ]; then
+  mkuser $configdir config
+  uconfig=config
+else
+  mkuser . config
+  uconfig=config
+  mkdir $configdir
+  chown $uconfig.$uconfig "$configdir"
 fi
 
 add_config()
-{ mkdir -p $configdir
-  cp $configavail/$1 $configdir
+{ cp "$configavail/$1" "$configdir/$1"
+  chown $uconfig.$uconfig "$configdir/$1"
 }
+
+if [ -t 0 ] ; then
+  start=--interactive
+fi
 
 while [ ! -z "$1" ]; do
   case "$1" in
@@ -74,21 +107,9 @@ while [ ! -z "$1" ]; do
   esac
 done
 
-for dir in data; do
-  mkdir -p $dir
-  chown -R daemon $dir
-done
-
-for file in ; do
-  if [ ! -f $file ]; then
-    touch $file
-  fi
-  chown daemon $file
-done
-
 if [ -S /rserve/socket ]; then
   add_config r_serve.pl
   echo ":- set_setting_default(rserve:socket, '/rserve/socket')." >> $configdir/r_serve.pl
 fi
 
-${SWISH_HOME}/daemon.pl --${scheme}=3050 ${ssl} --user=daemon $start
+${SWISH_HOME}/daemon.pl --${scheme}=3050 ${ssl} --user=$udaemon $start
