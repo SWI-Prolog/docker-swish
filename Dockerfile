@@ -16,8 +16,8 @@ RUN git clone https://github.com/SWI-Prolog/swish.git && \
 RUN make -C /swish RJS="nodejs /usr/lib/nodejs/requirejs/r.js" \
 	bower-zip packs min
 
-COPY swish.sh swish.sh
+COPY entry.sh entry.sh
 
 WORKDIR ${SWISH_DATA}
 
-ENTRYPOINT ["/swish.sh"]
+ENTRYPOINT ["/entry.sh"]
