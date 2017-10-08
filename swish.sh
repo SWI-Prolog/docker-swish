@@ -2,11 +2,15 @@
 
 port=3050
 data="$(pwd)"
+dopts=
 
 done=no
-while [ done = no ]; do
+while [ $done = no ]; do
   case "$1" in
     --port=*)	port="$(echo $1 | sed 's/[^=*]=//')"
+		shift
+		;;
+    -it)	dopts="$dopts -it"
 		shift
 		;;
     *)		done=yes
@@ -14,4 +18,4 @@ while [ done = no ]; do
   esac
 done
 
-docker run -p $port:3050 -v "$data":/data swish $*
+docker run -p $port:3050 -v "$data":/data $dopts swish $*
