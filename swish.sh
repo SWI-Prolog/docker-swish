@@ -8,7 +8,10 @@ fake=no
 done=no
 while [ $done = no ]; do
   case "$1" in
-    --port=*)	port="$(echo $1 | sed 's/[^=*]=//')"
+    --port=*)	port="$(echo $1 | sed 's/[^=]*=//')"
+		shift
+		;;
+    --with-R)	dopts="$dopts --volumes-from rserve"
 		shift
 		;;
     -n)		fake=yes

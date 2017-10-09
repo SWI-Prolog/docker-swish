@@ -15,9 +15,11 @@ uconfig=root
 usage()
 { echo "Usage: docker run [docker options] swish [swish options]"
   echo "swish options:"
-  echo "  --bash		 Just jun bash in the container"
-  echo "  --authenticated        Force login to SWISH"
-  echo "  --social		 Allow optional login"
+  echo "  --bash		 Just run bash in the container"
+  echo "  --auth=type            Configure authentication>:"
+  echo "         always          Force HTTP authentication"
+  echo "         social          Allow HTTP and oauth2 authentication"
+  echo "         anonymous       No authentication"
   echo "  --add-user		 Add a new user"
   echo "  --add-config file ...	 Add a configuration file"
   echo "  --list-config		 List configuration files"
@@ -25,7 +27,7 @@ usage()
   echo "  --CN=host		 Hostname for certificate"
   echo "  --O=organization	 Organization for certificate"
   echo "  --C=country		 Country for certificate"
-  echo "  --help                 Display usage"
+  echo "  --help                 Display this message"
 }
 
 add_user()
@@ -63,7 +65,7 @@ add_config()
 
 del_config()
 { while [ ! "$1" == "" ]; do
-    rm "$configdir/$1"
+    if [ -e "$configdir/$1" ]; then rm "$configdir/$1"; fi
     shift
   done
 }
@@ -100,6 +102,20 @@ auth_config_always()
 
   setup_initial_user
   add_config auth_http_always.pl
+}
+
+config_auth()
+{ case "$1" in
+    always)	auth_config_always
+		;;
+    anon*)	del_config auth_http.pl auth_google.pl \
+			   auth_stackoverflow.pl auth_http_always.pl
+		;;
+    social)	auth_config_social
+		;;
+    *)		usage
+		exit 1
+  esac
 }
 
 
@@ -139,10 +155,8 @@ while [ ! -z "$1" ]; do
     --bash)		/bin/bash
 			exit 0
 			;;
-    --authenticated)	auth_config_always
-			shift
-			;;
-    --social)		auth_config_social
+    --auth=*)		auth="$(echo $1 | sed 's/[^=]*=//')"
+			config_auth $auth
 			shift
 			;;
     --add-user)		add_user
