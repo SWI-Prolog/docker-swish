@@ -12,6 +12,16 @@ The image is built by simply running
 
 ## Running the image
 
+The image may be used in many  configurations, both controlled by docker
+options and options to the  entry   point.  As basic operation typically
+already requires publishing ports and setting up  a volume for the data,
+we added a bash script `swish.sh`   that automates the common scenarios.
+When called with `-n`, as  in  `./swish.sh   -n  option  ...`, it merery
+prints the docker command it will execute.
+
+
+
+
 ### Data
 
 The docker image maintains its data (user programs and configuration) on
@@ -51,7 +61,7 @@ server is started.
 
 ### The entry point
 
-The entry point of the containser is   `/swish.sh`,  a shell script that
+The entry point of the containser is   `/entry.sh`,  a shell script that
 initialises the data volume if needed and  starts the server. It accepts
 the following options:
 
@@ -85,3 +95,5 @@ the following options:
 
 ### Configuration
 
+The SWISH configuration is controlled by   files in the `config-enabled`
+directory.
