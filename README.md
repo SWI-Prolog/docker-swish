@@ -1,12 +1,12 @@
-# A SWISH Docker
+# A SWISH (SWI-Prolog for SHaring) docker
 
 This repository provides a   [Docker](https://www.docker.com/) image for
-[SWISH](http://swish.swi-prolog.org) based on the   official  SWI-Prolog
-docker image (`swipl`).
+[SWISH](http://swish.swi-prolog.org) based on the   official [SWI-Prolog
+docker image](https://hub.docker.com/_/swipl/).
 
 ## Building the image
 
-The image is built by simply running
+The image is built by running
 
     make image
 
@@ -15,20 +15,31 @@ The image is built by simply running
 The image may be used in many  configurations, both controlled by docker
 options and options to the  entry   point.  As basic operation typically
 already requires publishing ports and setting up  a volume for the data,
-we added a bash script `swish.sh`   that automates the common scenarios.
-When called with `-n`, as  in  `./swish.sh   -n  option  ...`, it merery
-prints the docker command it will execute.
+we added a bash script `swish.sh` that automates the common scenarios by
+providing `docker run` options from defaults  and provided options. When
+called with `-n`, as in `./swish.sh -n option ...`, it merery prints the
+docker command it will execute.  The following options are processed:
 
+  -- `--port=N` <br>
+     Modify the `-p` option to `-p N:3050`.  Default is 3050.
+  -- `--data=dir` <br>
+     Mount the given directory as data.  Default is the working
+     directory.
+  -- `--with-R` <br>
+     Add `--volumes-from rserve` to connect to an [R docker
+     image](https://github.com/JanWielemaker/rserve-sandbox)
+  -- `-n` <br>
+     Just print the docker command that will be executed.
+  -- `-it` <br>
+     Pass on (interactive)
 
-
+All remaining options are passed to the entry point of the image.
 
 ### Data
 
 The docker image maintains its data (user programs and configuration) on
 the _volume_ `/data`. This may be mapped   to a host directory using the
-docker `-v` options. The command below maps the current directory.
-
-    docker run -v `pwd`:/data swish
+docker `-v` options (see also the   `--data=dir`  option of `swish.sh`).
 
 Within the data directory, SWISH manages the following items:
 
@@ -69,26 +80,6 @@ the following options:
   Instead of starting the server, start a bash shell.  Terminate after
   bash completes.
 
-  - `--authenticated` <br>
-  Run in fully _authenticated_ mode, forcing the user to login
-  and allowing to execute arbitrary commands.  When executed for
-  the first time, docker must be run _interactively_ (`run -it`)
-  to create the first user.  Additional users are created using
-
-      `docker run -it swish --add-user`.
-
-  - `--social` <br>
-  Use _social_ login.  By default enables optional http login,
-  login using google and stackoverflow.  Both need to be further
-  configured by editing `config-enabled/auth_google.pl` and
-  `config-enabled/auth_stackoverflow.pl`
-
-  - `--https` <br>
-  Create an HTTPS server.  This uses the certificate from the
-  `https` directory (see above).  If no certificate exists, a
-  self-signed certificate is created.  The details may be refined
-  using `--CN=host`, `--O=organization` and `--C=country`
-
   - `--help` <br>
   Emit short help.
 
@@ -96,4 +87,53 @@ the following options:
 ### Configuration
 
 The SWISH configuration is controlled by   files in the `config-enabled`
-directory.
+directory. Several commands may be used   to  control the configuration.
+These are executed as below:
+
+  ```
+  docker run -it swish option ...
+  ```
+
+The options provided are:
+
+  -- `--list-config` <br>
+  List installed and available configuration items.  If an item is
+  installed, indicate whether it is modified.
+
+  - `--auth=type` <br>
+  Change the configured authentication scheme.  This is one of
+
+    - `always` <br>
+    Run in fully _authenticated_ mode, forcing the user to login
+    and allowing to execute arbitrary commands.  When executed for
+    the first time, docker must be run _interactively_ (`run -it`)
+    to create the first user.  Additional users are created using
+
+        `docker run -it swish --add-user`.
+
+    - `social` <br>
+    Use _social_ login.  By default enables optional http login,
+    login using google and stackoverflow.  Both need to be further
+    configured by editing `config-enabled/auth_google.pl` and
+    `config-enabled/auth_stackoverflow.pl`
+
+    - `anon` (or annoymous) <br>
+    This is the initial default, providing fully anonymous login,
+    executing only sandboxed Prolog queries.
+
+  - `--add-config file ...` <br>
+  Add one or more configuration files by copying them from the
+  available configuration directory.
+
+  - `--add-user` <br>
+  Add a new user to the HTTP authentication.  Prompts for user name,
+  email, group (unused, use `users`) and password.
+
+  - `--https` <br>
+  Create an HTTPS server.  This uses the certificate from the
+  `https` directory (see above).  If no certificate exists, a
+  self-signed certificate is created.  The details may be refined
+  using `--CN=host`, `--O=organization` and `--C=country`
+
+
+

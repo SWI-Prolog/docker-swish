@@ -11,6 +11,9 @@ while [ $done = no ]; do
     --port=*)	port="$(echo $1 | sed 's/[^=]*=//')"
 		shift
 		;;
+    --data=dir) data="$(echo $1 | sed 's/[^=]*=//')"
+		shift
+		;;
     --with-R)	dopts="$dopts --volumes-from rserve"
 		shift
 		;;

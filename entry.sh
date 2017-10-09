@@ -23,6 +23,7 @@ usage()
   echo "  --add-user		 Add a new user"
   echo "  --add-config file ...	 Add a configuration file"
   echo "  --list-config		 List configuration files"
+  echo "  --http		 Create an HTTP server"
   echo "  --https		 Create an HTTPS server"
   echo "  --CN=host		 Hostname for certificate"
   echo "  --O=organization	 Organization for certificate"
@@ -72,15 +73,19 @@ del_config()
 
 list_config()
 { for c in $(ls $configavail); do
-    if [ -e "$configdir/$c" -a ! "$c" = README.md -a ! "$c" = "gitty" ]; then
-      if cmp -s "$configavail/$c" "$configdir/$c"; then
-	printf "  %25s (installed, not modified)\n" $c
-      else
-        printf "  %25s (installed, modified)\n" $c
-      fi
-    else
-      printf "  %25s (not installed)\n" $c
-    fi
+    case "$c" in
+      *.pl)
+	if [ -e "$configdir/$c" -a ! "$c" = README.md -a ! "$c" = "gitty" ]; then
+	  if cmp -s "$configavail/$c" "$configdir/$c"; then
+	    printf "  %25s (installed, not modified)\n" $c
+	  else
+	    printf "  %25s (installed, modified)\n" $c
+	  fi
+	else
+	  printf "  %25s (not installed)\n" $c
+	fi
+	;;
+    esac
   done
 
   for c in $(ls $configdir); do
@@ -150,6 +155,10 @@ if [ -t 0 ] ; then
   start=--interactive
 fi
 
+if [ -r https/server.crt -a -r https/server.key ]; then
+  scheme=https
+fi
+
 while [ ! -z "$1" ]; do
   case "$1" in
     --bash)		/bin/bash
@@ -157,7 +166,7 @@ while [ ! -z "$1" ]; do
 			;;
     --auth=*)		auth="$(echo $1 | sed 's/[^=]*=//')"
 			config_auth $auth
-			shift
+			exit 0
 			;;
     --add-user)		add_user
 			exit 0
@@ -168,6 +177,9 @@ while [ ! -z "$1" ]; do
 			;;
     --list-config)	list_config
 			exit 0
+			;;
+    --http)		scheme=http
+			shift
 			;;
     --https)		scheme=https
 			shift
