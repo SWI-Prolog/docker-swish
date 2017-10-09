@@ -20,18 +20,18 @@ providing `docker run` options from defaults  and provided options. When
 called with `-n`, as in `./swish.sh -n option ...`, it merery prints the
 docker command it will execute.  The following options are processed:
 
-  -- `--port=N` <br>
-     Modify the `-p` option to `-p N:3050`.  Default is 3050.
-  -- `--data=dir` <br>
-     Mount the given directory as data.  Default is the working
-     directory.
-  -- `--with-R` <br>
-     Add `--volumes-from rserve` to connect to an [R docker
-     image](https://github.com/JanWielemaker/rserve-sandbox)
-  -- `-n` <br>
-     Just print the docker command that will be executed.
-  -- `-it` <br>
-     Pass on (interactive)
+  - `--port=N` <br>
+    Modify the `-p` option to `-p N:3050`.  Default is 3050.
+  - `--data=dir` <br>
+    Mount the given directory as data.  Default is the working
+    directory.
+  - `--with-R` <br>
+    Add `--volumes-from rserve` to connect to an [R docker
+    image](https://github.com/JanWielemaker/rserve-sandbox)
+  - `-n` <br>
+    Just print the docker command that will be executed.
+  - `-it` <br>
+    Pass on (interactive)
 
 All remaining options are passed to the entry point of the image.
 
@@ -96,7 +96,7 @@ These are executed as below:
 
 The options provided are:
 
-  -- `--list-config` <br>
+  - `--list-config` <br>
   List installed and available configuration items.  If an item is
   installed, indicate whether it is modified.
 
