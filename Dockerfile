@@ -1,4 +1,7 @@
 FROM swipl
+
+LABEL maintainer "Jan Wielemaker <jan@swi-prolog.org>"
+
 RUN apt-get update && \
     apt-get install -y git build-essential autoconf curl unzip \
 		       cleancss node-requirejs \
