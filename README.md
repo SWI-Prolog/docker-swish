@@ -80,6 +80,9 @@ the following options:
   Instead of starting the server, start a bash shell.  Terminate after
   bash completes.
 
+  - `--workers=N` <br>
+  Use N HTTP worker threads.  Default is 16.
+
   - `--help` <br>
   Emit short help.
 

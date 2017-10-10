@@ -11,6 +11,7 @@ ssl=
 scheme=http
 udaemon=daemon
 uconfig=root
+workers=16
 
 usage()
 { echo "Usage: docker run [docker options] swish [swish options]"
@@ -28,6 +29,7 @@ usage()
   echo "  --CN=host		 Hostname for certificate"
   echo "  --O=organization	 Organization for certificate"
   echo "  --C=country		 Country for certificate"
+  echo "  --workers=N            Use N HTTP worker threads (default 16)"
   echo "  --help                 Display this message"
 }
 
@@ -187,6 +189,8 @@ while [ ! -z "$1" ]; do
     --CN=*|--O=*|--C=*)	ssl="$ssl $1"
 			shift
 			;;
+    --workers=*)	workers="$(echo $1 | sed 's/[^=]*=//')"
+			;;
     --help)		usage
 			exit 0
 			;;
@@ -201,4 +205,4 @@ if [ -S /rserve/socket ]; then
   echo ":- set_setting_default(rserve:socket, '/rserve/socket')." >> $configdir/r_serve.pl
 fi
 
-${SWISH_HOME}/daemon.pl --${scheme}=3050 ${ssl} --user=$udaemon $start
+${SWISH_HOME}/daemon.pl --${scheme}=3050 ${ssl} --user=$udaemon --workers=$workers $start
