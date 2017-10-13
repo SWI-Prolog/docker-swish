@@ -1,17 +1,11 @@
-FROM swipl
+FROM swipl as base
 
-LABEL maintainer "Jan Wielemaker <jan@swi-prolog.org>"
-
-RUN apt-get update && \
-    apt-get install -y git build-essential autoconf curl unzip \
-		       cleancss node-requirejs \
-		       graphviz imagemagick
+RUN apt-get update && apt-get install -y \
+    git build-essential autoconf curl unzip \
+    cleancss node-requirejs
 
 ENV SWISH_HOME /swish
-ENV SWISH_DATA /data
-ENV SWISH_SHA1 7da9a430762d7b6ee2e381fdad419e9c8144d546
-
-VOLUME ${SWISH_DATA}
+ENV SWISH_SHA1 385325cb25707b70efb8de1ed8bb3abc58a434ef
 
 RUN echo "At version ${SWISH_SHA1}"
 RUN git clone https://github.com/SWI-Prolog/swish.git && \
@@ -19,8 +13,19 @@ RUN git clone https://github.com/SWI-Prolog/swish.git && \
 RUN make -C /swish RJS="nodejs /usr/lib/nodejs/requirejs/r.js" \
 	bower-zip packs min
 
+FROM base
+LABEL maintainer "Jan Wielemaker <jan@swi-prolog.org>"
+
+RUN apt-get update && apt-get install -y \
+    graphviz imagemagick \
+    wamerican && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=base /swish /swish
 COPY entry.sh entry.sh
 
+ENV SWISH_DATA /data
+VOLUME ${SWISH_DATA}
 WORKDIR ${SWISH_DATA}
 
 ENTRYPOINT ["/entry.sh"]
