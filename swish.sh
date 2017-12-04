@@ -29,7 +29,7 @@ while [ $done = no ]; do
 done
 
 if [ $fake = no ]; then
-  docker run -p $port:3050 -v "$data":/data $dopts swish $*
+  docker run -p $port:3050 -v "$data":/data $dopts swipl/swish $*
 else
-  echo docker run -p $port:3050 -v "$data":/data $dopts swish $*
+  echo docker run -p $port:3050 -v "$data":/data $dopts swipl/swish $*
 fi
