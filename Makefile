@@ -10,13 +10,18 @@ all:
 	@echo "Targets"
 	@echo
 	@echo "image            Build the ${IMAGE} image"
+	@echo "rserve           Run the rserve containtainer from image swipl/rserve"
 	@echo "run              Run the image (detached)"
 	@echo "authenticated    Run the image in authenticated mode"
 	@echo "social           Run the image with social login"
 	@echo "add-user         Add a user for authenticated mode"
 	@echo "interactive      Run the image interactively"
 
-image::
+
+rserve:
+	docker run --detach --net=none --name rserve swipl/rserve
+
+image:
 	docker build -t ${IMAGE} .
 
 run:
