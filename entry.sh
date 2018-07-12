@@ -11,7 +11,7 @@ ssl=
 scheme=http
 udaemon=daemon
 uconfig=root
-workers=16
+config_run=no
 
 usage()
 { echo "Usage: docker run [docker options] swish [swish options]"
@@ -29,7 +29,7 @@ usage()
   echo "  --CN=host		 Hostname for certificate"
   echo "  --O=organization	 Organization for certificate"
   echo "  --C=country		 Country for certificate"
-  echo "  --workers=N            Use N HTTP worker threads (default 16)"
+  echo "  --run			 Start SWISH after config options"
   echo "  --help                 Display this message"
 }
 
@@ -161,24 +161,31 @@ if [ -r https/server.crt -a -r https/server.key ]; then
   scheme=https
 fi
 
+did_config=no
+
 while [ ! -z "$1" ]; do
   case "$1" in
     --bash)		/bin/bash
-			exit 0
+			did_config=yes
+			shift
 			;;
     --auth=*)		auth="$(echo $1 | sed 's/[^=]*=//')"
 			config_auth $auth
-			exit 0
+			did_config=yes
+			shift
 			;;
     --add-user)		add_user
-			exit 0
+			did_config=yes
+			shift
 			;;
     --add-config)	shift
 			add_config $*
-			exit 0
+			did_config=yes
+			shift
 			;;
     --list-config)	list_config
-			exit 0
+			did_config=yes
+			shift
 			;;
     --http)		scheme=http
 			shift
@@ -189,7 +196,8 @@ while [ ! -z "$1" ]; do
     --CN=*|--O=*|--C=*)	ssl="$ssl $1"
 			shift
 			;;
-    --workers=*)	workers="$(echo $1 | sed 's/[^=]*=//')"
+    --run)		config_run=yes
+			shift
 			;;
     --help)		usage
 			exit 0
@@ -200,9 +208,13 @@ while [ ! -z "$1" ]; do
   esac
 done
 
+if [ $did_config = yes -a $config_run = no ]; then
+  exit 0
+fi
+
 if [ -S /rserve/socket ]; then
   add_config r_serve.pl
   echo ":- set_setting_default(rserve:socket, '/rserve/socket')." >> $configdir/r_serve.pl
 fi
 
-${SWISH_HOME}/daemon.pl --${scheme}=3050 ${ssl} --user=$udaemon --workers=$workers $start
+${SWISH_HOME}/daemon.pl --${scheme}=3050 ${ssl} --user=$udaemon $start
