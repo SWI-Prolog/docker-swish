@@ -30,6 +30,8 @@ docker command it will execute.  The following options are processed:
     image](https://github.com/JanWielemaker/rserve-sandbox)
   - `-n` <br>
     Just print the docker command that will be executed.
+  - `-d` <br>
+    Detach from the terminal
   - `-it` <br>
     Pass on (interactive)
 
@@ -80,9 +82,6 @@ the following options:
   Instead of starting the server, start a bash shell.  Terminate after
   bash completes.
 
-  - `--workers=N` <br>
-  Use N HTTP worker threads.  Default is 16.
-
   - `--help` <br>
   Emit short help.
 
@@ -96,6 +95,11 @@ These are executed as below:
   ```
   docker run -it swish option ...
   ```
+
+Multiple configuration options may be passed to update multiple facets
+of the configuration. Normally the image stops after updating the
+configuration. If `--run` is added the entry point starts the server
+after updating the configuration.
 
 The options provided are:
 
@@ -120,7 +124,7 @@ The options provided are:
     configured by editing `config-enabled/auth_google.pl` and
     `config-enabled/auth_stackoverflow.pl`
 
-    - `anon` (or annoymous) <br>
+    - `anon` (or anonymous) <br>
     This is the initial default, providing fully anonymous login,
     executing only sandboxed Prolog queries.
 
