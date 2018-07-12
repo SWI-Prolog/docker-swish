@@ -42,7 +42,7 @@ add_user()
   fi
 }
 
-# `mkdir file user` creates user with the uid and gid of file.
+# `mkuser file user` creates user with the uid and gid of file.
 
 mkuser()
 { f="$1"

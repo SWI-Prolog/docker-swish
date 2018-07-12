@@ -11,13 +11,20 @@ while [ $done = no ]; do
     --port=*)	port="$(echo $1 | sed 's/[^=]*=//')"
 		shift
 		;;
-    --data=dir) data="$(echo $1 | sed 's/[^=]*=//')"
+    --data=*)	data="$(echo $1 | sed 's/[^=]*=//')"
+		shift
+		;;
+    --with-R=*) from="$(echo $1 | sed 's/[^=]*=//')"
+		dopts="$dopts --volumes-from $from"
 		shift
 		;;
     --with-R)	dopts="$dopts --volumes-from rserve"
 		shift
 		;;
     -n)		fake=yes
+		shift
+		;;
+    -d)		dopts="$dopts -d"
 		shift
 		;;
     -it)	dopts="$dopts -it"

@@ -25,9 +25,10 @@ docker command it will execute.  The following options are processed:
   - `--data=dir` <br>
     Mount the given directory as data.  Default is the working
     directory.
-  - `--with-R` <br>
-    Add `--volumes-from rserve` to connect to an [R docker
-    image](https://github.com/JanWielemaker/rserve-sandbox)
+  - `--with-R[=from]` <br>
+    Add `--volumes-from from` where _from_ defaults to `rserve`
+    to connect to an
+    [R docker image](https://github.com/JanWielemaker/rserve-sandbox)
   - `-n` <br>
     Just print the docker command that will be executed.
   - `-d` <br>
