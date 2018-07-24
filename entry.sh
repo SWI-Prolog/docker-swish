@@ -16,21 +16,23 @@ config_run=no
 usage()
 { echo "Usage: docker run [docker options] swish [swish options]"
   echo "swish options:"
+  echo "  --help                 Display this message"
   echo "  --bash		 Just run bash in the container"
   echo "  --auth=type            Configure authentication>:"
   echo "         always          Force HTTP authentication"
   echo "         social          Allow HTTP and oauth2 authentication"
   echo "         anonymous       No authentication"
   echo "  --add-user		 Add a new user"
-  echo "  --add-config file ...	 Add a configuration file"
-  echo "  --list-config		 List configuration files"
   echo "  --http		 Create an HTTP server"
   echo "  --https		 Create an HTTPS server"
   echo "  --CN=host		 Hostname for certificate"
   echo "  --O=organization	 Organization for certificate"
   echo "  --C=country		 Country for certificate"
   echo "  --run			 Start SWISH after config options"
-  echo "  --help                 Display this message"
+  echo "  --list-config		 List configuration files"
+  echo "  --add-config file ...	 Add a configuration file"
+  echo ""
+  echo "--add-config should be the last option if used."
 }
 
 add_user()
@@ -181,7 +183,7 @@ while [ ! -z "$1" ]; do
     --add-config)	shift
 			add_config $*
 			did_config=yes
-			shift
+			break
 			;;
     --list-config)	list_config
 			did_config=yes
