@@ -2,10 +2,10 @@
 #
 # Start script for the SWISH docker
 #
-# This script is started in /data.  SWISH is in /swish
+# This script is started in /data.  SWISH is in ${SWISH_HOME}
 
 configdir=config-enabled
-configavail=/swish/config-available
+configavail=${SWISH_HOME}/config-available
 start=--no-fork
 ssl=
 scheme=http
