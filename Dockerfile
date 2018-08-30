@@ -18,7 +18,7 @@ LABEL maintainer "Jan Wielemaker <jan@swi-prolog.org>"
 
 RUN apt-get update && apt-get install -y \
     graphviz imagemagick \
-    git && \
+    git \
     wamerican && \
     rm -rf /var/lib/apt/lists/*
 
