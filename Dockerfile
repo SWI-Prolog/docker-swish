@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y \
     cleancss node-requirejs
 
 ENV SWISH_HOME /swish
-ENV SWISH_SHA1 3d3ae7cf91f53e34e6f0d030ffd68c1c196b2a74
+ENV SWISH_SHA1 V1.1.0
 
 RUN echo "At version ${SWISH_SHA1}"
 RUN git clone https://github.com/SWI-Prolog/swish.git && \
