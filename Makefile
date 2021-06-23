@@ -3,7 +3,7 @@ PORT=3050
 WITH_R=--volumes-from=rserve
 
 PUBLISH=--publish=${PORT}:3050
-DOPTS=${PUBLISH} -v ${VOLUME}:/data ${WITH_R}
+DOPTS=--rm ${PUBLISH} -v ${VOLUME}:/data ${WITH_R}
 
 all:
 	@echo "Targets"
