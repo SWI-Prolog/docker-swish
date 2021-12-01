@@ -4,6 +4,7 @@ WITH_R=--volumes-from=rserve
 
 PUBLISH=--publish=${PORT}:3050
 DOPTS=--rm ${PUBLISH} -v ${VOLUME}:/data ${WITH_R}
+IMG=swipl/swish
 
 all:
 	@echo "Targets"
@@ -16,23 +17,25 @@ all:
 	@echo "interactive      Run the image interactively"
 
 image::
-	docker build -t swish .
+	docker build -t $(IMG) .
 
 run:
-	docker run --detach ${DOPTS} swish
+	docker run --detach ${DOPTS} $(IMG)
 
 authenticated:
-	docker run --detach ${DOPTS} swish --authenticated
+	docker run --detach ${DOPTS} $(IMG) --authenticated
 
 social:
-	docker run --detach ${DOPTS} swish --social
+	docker run --detach ${DOPTS} $(IMG) --social
 
 interactive:
-	docker run -it ${DOPTS} swish
+	docker run -it ${DOPTS} $(IMG)
 
 add-user:
-	docker run -it ${DOPTS} swish --add-user
+	docker run -it ${DOPTS} $(IMG) --add-user
 
 help:
-	docker run -it ${DOPTS} swish --help
+	docker run -it ${DOPTS} $(IMG) --help
 
+push:
+	docker push $(IMG):latest
