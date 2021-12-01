@@ -153,6 +153,7 @@ else
   add_config notifications.pl
   add_config email.pl
   add_config clpqr.pl
+  add_config scasp.pl
 fi
 
 if [ -t 0 ] ; then
