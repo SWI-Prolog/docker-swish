@@ -1,11 +1,11 @@
-FROM swipl as base
+FROM swipl:latest as base
 
 RUN apt-get update && apt-get install -y \
     git build-essential autoconf curl unzip \
     cleancss node-requirejs
 
 ENV SWISH_HOME /swish
-ENV SWISH_SHA1 V1.5.1
+ENV SWISH_SHA1 V1.6.0
 
 RUN echo "At version ${SWISH_SHA1}"
 RUN git clone https://github.com/SWI-Prolog/swish.git && \
