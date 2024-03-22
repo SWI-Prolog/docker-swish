@@ -1,4 +1,5 @@
 VOLUME=$(shell pwd)
+RESTART=--restart unless-stopped
 PORT=3050
 WITH_R=--volumes-from=rserve
 
@@ -39,3 +40,8 @@ help:
 
 push:
 	docker push $(IMG):latest
+
+install-rserve:
+	-docker stop rserve
+	-docker rm rserve
+	docker run -d $(RESTART) --net=none --name=rserve swipl/rserve
