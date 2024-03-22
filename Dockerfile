@@ -2,7 +2,7 @@ FROM swipl:latest as base
 
 RUN apt-get update && apt-get install -y \
     git build-essential autoconf curl unzip \
-    cleancss node-requirejs
+    cleancss node-requirejs uglifyjs
 
 ENV SWISH_HOME /swish
 ARG SWISH_SHA1 V1.7.0
