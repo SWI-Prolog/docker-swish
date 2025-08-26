@@ -5,7 +5,7 @@ RUN apt-get update && apt-get install -y \
     cleancss node-requirejs uglifyjs
 
 ENV SWISH_HOME /swish
-ARG SWISH_SHA1 V2.1.0
+ARG SWISH_SHA1 V2.2.0
 
 RUN echo "At version ${SWISH_SHA1}"
 RUN git clone https://github.com/SWI-Prolog/swish.git && \
