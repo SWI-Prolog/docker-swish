@@ -63,7 +63,7 @@ setup_initial_user()
 add_config()
 { while [ ! "$1" == "" ]; do
     cp "$configavail/$1" "$configdir/$1"
-    chown $uconfig.$uconfig "$configdir/$1"
+    chown $uconfig:$uconfig "$configdir/$1"
     shift
   done
 }
@@ -136,7 +136,7 @@ if [ -d data ]; then
   udaemon=swish
 else
   mkdir data
-  chown $udaemon.$udaemon data
+  chown $udaemon:$udaemon data
 fi
 
 if [ -d $configdir ]; then
@@ -146,7 +146,7 @@ else
   mkuser . config
   uconfig=config
   mkdir $configdir
-  chown $uconfig.$uconfig "$configdir"
+  chown $uconfig:$uconfig "$configdir"
 	# Add default configuration
   add_config README.md
   add_config user_profile.pl
@@ -168,7 +168,8 @@ did_config=no
 
 while [ ! -z "$1" ]; do
   case "$1" in
-    --bash)		/bin/bash
+    --bash)		export scheme ssl udaemon start
+			/bin/bash
 			did_config=yes
 			shift
 			;;

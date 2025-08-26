@@ -1,4 +1,4 @@
-FROM swipl:latest as base
+FROM swipl:latest AS base
 
 RUN apt-get update && apt-get install -y \
     git build-essential autoconf curl unzip \
@@ -14,7 +14,7 @@ RUN make -C /swish RJS="nodejs /usr/share/nodejs/requirejs/r.js" \
 	yarn-zip packs min
 
 FROM base
-LABEL maintainer "Jan Wielemaker <jan@swi-prolog.org>"
+LABEL maintainer="Jan Wielemaker <jan@swi-prolog.org>"
 
 RUN apt-get update && apt-get install -y \
     graphviz imagemagick \
@@ -25,7 +25,7 @@ RUN apt-get update && apt-get install -y \
 COPY --from=base /swish /swish
 COPY entry.sh entry.sh
 
-ENV SWISH_DATA /data
+ENV SWISH_DATA=/data
 VOLUME ${SWISH_DATA}
 WORKDIR ${SWISH_DATA}
 
