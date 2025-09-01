@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y \
     git build-essential autoconf curl unzip \
     cleancss node-requirejs uglifyjs
 
-ENV SWISH_HOME /swish
+ENV SWISH_HOME=/swish
 ARG SWISH_SHA1 V2.2.0
 
 RUN echo "At version ${SWISH_SHA1}"
