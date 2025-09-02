@@ -51,7 +51,7 @@ mkuser()
   u="$2"
 
   groupadd "$(ls -nd "$f" | awk '{printf "-g %s\n",$4 }')" -o $u
-  useradd  "$(ls -nd "$f" | awk '{printf "-u %s\n",$3 }')" -g $u -o $u
+  useradd  "$(ls -nd "$f" | awk '{printf "-u %s\n",$3 }')" -g $u -o $u -m
 }
 
 setup_initial_user()
