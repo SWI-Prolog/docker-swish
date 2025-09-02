@@ -136,6 +136,8 @@ if [ -d data ]; then
   udaemon=swish
 else
   mkdir data
+  mkdir /home/$udaemon
+  chown $udaemon:$udaemon /home/$udaemon
   chown $udaemon:$udaemon data
 fi
 
@@ -221,4 +223,4 @@ if [ -S /rserve/socket ]; then
   echo ":- set_setting_default(rserve:socket, '/rserve/socket')." >> $configdir/r_serve.pl
 fi
 
-${SWISH_HOME}/daemon.pl --${scheme}=3050 ${ssl} --user=$udaemon $start
+HOME=/home/$udaemon ${SWISH_HOME}/daemon.pl --${scheme}=3050 ${ssl} --user=$udaemon $start
