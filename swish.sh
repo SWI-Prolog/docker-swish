@@ -4,6 +4,8 @@ port=3050
 data="$(pwd)"
 dopts=
 fake=no
+image=swipl/swish
+name=
 
 done=no
 while [ $done = no ]; do
@@ -21,6 +23,10 @@ while [ $done = no ]; do
     --with-R)	dopts="$dopts --volumes-from rserve"
 		shift
 		;;
+    --name=*)   name="$(echo $1 | sed 's/[^=]*=//')"
+		dopts="$dopts --name $name"
+		shift
+		;;
     -n)		fake=yes
 		shift
 		;;
@@ -36,7 +42,7 @@ while [ $done = no ]; do
 done
 
 if [ $fake = no ]; then
-  docker run -p $port:3050 -v "$data":/data $dopts swish $*
+  docker run -p $port:3050 -v "$data":/data $dopts $image $*
 else
-  echo docker run -p $port:3050 -v "$data":/data $dopts swish $*
+  echo docker run -p $port:3050 -v "$data":/data $dopts $image $*
 fi
